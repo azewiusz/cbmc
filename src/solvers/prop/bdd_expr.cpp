@@ -33,8 +33,8 @@ bddt bdd_exprt::from_expr_rec(const exprt &expr)
       "logical and, or, and xor expressions have at least two operands");
     exprt bin_expr=make_binary(expr);
 
-    bddt op0 = from_expr_rec(bin_expr.op0());
-    bddt op1 = from_expr_rec(bin_expr.op1());
+    bddt op0 = from_expr_rec(to_binary_expr(bin_expr).op0());
+    bddt op1 = from_expr_rec(to_binary_expr(bin_expr).op1());
 
     return expr.id() == ID_and
              ? op0.bdd_and(op1)
@@ -49,9 +49,8 @@ bddt bdd_exprt::from_expr_rec(const exprt &expr)
 
     return n_op0.bdd_or(op1);
   }
-  else if(expr.id()==ID_equal &&
-          expr.operands().size()==2 &&
-          expr.op0().type().id()==ID_bool)
+  else if(
+    expr.id() == ID_equal && to_equal_expr(expr).lhs().type().id() == ID_bool)
   {
     const equal_exprt &eq_expr=to_equal_expr(expr);
 

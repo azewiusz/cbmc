@@ -37,12 +37,14 @@ get_quantifier_var_min(const exprt &var_expr, const exprt &quantifier_expr)
     {
       if(x.id()!=ID_not)
         continue;
-      exprt y=x.op0();
+      exprt y = to_not_expr(x).op();
       if(y.id()!=ID_ge)
         continue;
-      if(expr_eq(var_expr, y.op0()) && y.op1().id()==ID_constant)
+      if(
+        expr_eq(var_expr, to_binary_relation_expr(y).lhs()) &&
+        to_binary_relation_expr(y).rhs().id() == ID_constant)
       {
-        return to_constant_expr(y.op1());
+        return to_constant_expr(to_binary_relation_expr(y).rhs());
       }
     }
   }
@@ -56,9 +58,11 @@ get_quantifier_var_min(const exprt &var_expr, const exprt &quantifier_expr)
     {
       if(x.id()!=ID_ge)
         continue;
-      if(expr_eq(var_expr, x.op0()) && x.op1().id()==ID_constant)
+      if(
+        expr_eq(var_expr, to_binary_relation_expr(x).lhs()) &&
+        to_binary_relation_expr(x).rhs().id() == ID_constant)
       {
-        return to_constant_expr(x.op1());
+        return to_constant_expr(to_binary_relation_expr(x).rhs());
       }
     }
   }
@@ -81,9 +85,12 @@ get_quantifier_var_max(const exprt &var_expr, const exprt &quantifier_expr)
     {
       if(x.id()!=ID_ge)
         continue;
-      if(expr_eq(var_expr, x.op0()) && x.op1().id()==ID_constant)
+      if(
+        expr_eq(var_expr, to_binary_relation_expr(x).lhs()) &&
+        to_binary_relation_expr(x).rhs().id() == ID_constant)
       {
-        const constant_exprt &over_expr = to_constant_expr(x.op1());
+        const constant_exprt &over_expr =
+          to_constant_expr(to_binary_relation_expr(x).rhs());
 
         mp_integer over_i = numeric_cast_v<mp_integer>(over_expr);
 
@@ -93,7 +100,7 @@ get_quantifier_var_max(const exprt &var_expr, const exprt &quantifier_expr)
          * maximum index as specified in the original code.
          **/
         over_i-=1;
-        return from_integer(over_i, x.op1().type());
+        return from_integer(over_i, to_binary_relation_expr(x).rhs().type());
       }
     }
   }
@@ -107,15 +114,18 @@ get_quantifier_var_max(const exprt &var_expr, const exprt &quantifier_expr)
     {
       if(x.id()!=ID_not)
         continue;
-      exprt y=x.op0();
+      exprt y = to_not_expr(x).op();
       if(y.id()!=ID_ge)
         continue;
-      if(expr_eq(var_expr, y.op0()) && y.op1().id()==ID_constant)
+      if(
+        expr_eq(var_expr, to_binary_relation_expr(y).lhs()) &&
+        to_binary_relation_expr(y).rhs().id() == ID_constant)
       {
-        const constant_exprt &over_expr = to_constant_expr(y.op1());
+        const constant_exprt &over_expr =
+          to_constant_expr(to_binary_relation_expr(y).rhs());
         mp_integer over_i = numeric_cast_v<mp_integer>(over_expr);
         over_i-=1;
-        return from_integer(over_i, y.op1().type());
+        return from_integer(over_i, to_binary_relation_expr(y).rhs().type());
       }
     }
   }

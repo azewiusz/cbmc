@@ -29,9 +29,9 @@ literalt boolbvt::convert_overflow(const exprt &expr)
     if(bv0.size()!=bv1.size())
       return SUB::convert_rest(expr);
 
-    bv_utilst::representationt rep=
-      expr.op0().type().id()==ID_signedbv?bv_utilst::representationt::SIGNED:
-                                          bv_utilst::representationt::UNSIGNED;
+    bv_utilst::representationt rep = operands[0].type().id() == ID_signedbv
+                                       ? bv_utilst::representationt::SIGNED
+                                       : bv_utilst::representationt::UNSIGNED;
 
     return expr.id()==ID_overflow_minus?
       bv_utils.overflow_sub(bv0, bv1, rep):

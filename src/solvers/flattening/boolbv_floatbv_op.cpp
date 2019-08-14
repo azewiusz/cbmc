@@ -79,13 +79,8 @@ bvt boolbvt::convert_floatbv_typecast(const floatbv_typecast_exprt &expr)
     return conversion_failed(expr);
 }
 
-bvt boolbvt::convert_floatbv_op(const exprt &expr)
+bvt boolbvt::convert_floatbv_op(const ieee_float_op_exprt &expr)
 {
-  const exprt::operandst &operands=expr.operands();
-
-  if(operands.size()!=3)
-    throw "operator "+expr.id_string()+" takes three operands";
-
   const exprt &lhs = expr.op0();
   const exprt &rhs = expr.op1();
   const exprt &rounding_mode = expr.op2();
